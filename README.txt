@@ -33,13 +33,12 @@ INSTALLATION FROM GITHUB
 
 AUTH0 CONFIGURATION
 -------------------
-1. Go to your auth0 dashboard https://manage.auth0.com/
-2. Create a new Client with the type "Regular Web Application"
-3. In the "Allowed Callback URLs" field, add a URL like 'http://yourdomain.com/auth0/callback'
-4. Make a note of your domain, Client ID and Client Secret (also note whether the Client Secret is base64 encoded or
-not).
-5. If using SSO, make sure to add your site's homepage to the "Allowed Logout URLs" field in your Tenant > Advanced
-settings.
+1. Go to your auth0 dashboard https://app.auth0.com/
+2. Create a new PHP application.
+3. On App Callbacks URLs add a url like this `http://<yoursite>/auth0/callback`
+4. Open "API Access" tab.
+5. Keep notice of your domain, client id and client secret (note whether the client secret is base64 encoded or not).  RECOMMENDED: Go to your client's advanced settings and select RS256 and OIDC Conformant under the Oauth tab.  Please note that this requires you set Redirect login for SSO as well.
+6. If redirecting for SSO, make sure you add `http://<yoursite>` to the allowed logouts in your account settings in Auth0.
 
 MODULE CONFIGURATION
 --------------------

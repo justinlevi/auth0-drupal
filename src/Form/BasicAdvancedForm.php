@@ -42,13 +42,6 @@ class BasicAdvancedForm extends FormBase {
         '#description' => t('If you have database connection you can allow users to signup in the widget.')
     );
 
-    $form['auth0_allow_offline_access'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Send a Refresh Token in the Signin Event for offline access'),
-      '#default_value' => $config->get('auth0_allow_offline_access', FALSE),
-      '#description' => t('If you need a refresh token for refreshing an expired session, set this to true, and then a refresh token will be sent in the Signin Event')
-    );
-
     $form['auth0_redirect_for_sso'] = array(
         '#type' => 'checkbox',
         '#title' => t('Redirect login for SSO'),
@@ -70,24 +63,6 @@ class BasicAdvancedForm extends FormBase {
         '#description' => t('Mark this if you require the user to have a verified email to login.')
     );
 
-    $form['auth0_join_user_by_mail_enabled'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Link auth0 logins to drupal users by email address'),
-      '#default_value' => $config->get('auth0_join_user_by_mail_enabled'),
-      '#description' => t('If enabled, when a user logs into Drupal for the first time, the system will use the email 
-address of the Auth0 user to search for a drupal user with the same email address and setup a link to that 
-Drupal user account.
-<br/>If not enabled, then a new Drupal user will be created even if a Drupal user with the same email address already exists.
-')
-    );
-
-    $form['auth0_username_claim'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Map Auth0 claim to Drupal user name.'),
-      '#default_value' => $config->get('auth0_username_claim', 'nickname'),
-      '#description' => t('Maps the given claim field as the Drupal user name field. The default is the nickname claim'),
-    );
-    
     $form['auth0_login_css'] = array(
         '#type' => 'textarea',
         '#title' => t('Login widget css'),
@@ -101,52 +76,6 @@ Drupal user account.
         '#default_value' => $config->get('auth0_lock_extra_settings'),
         '#description' => t('This should be a valid JSON file. This entire object will be passed to the lock options parameter.')
     );
-
-    $form['auth0_auto_register'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Auto Register Auth0 users (ignore site registration settings)'),
-      '#default_value' => $config->get('auth0_auto_register', FALSE),
-      '#description' => t('Enable this option if you want new auth0 users to automatically be activated within Drupal regardless of the global site visitor registration settings (e.g. requiring admin approval).'),
-    );
-
-    // Enhancement to support mapping claims to user attributes and to roles
-    $form['auth0_claim_mapping'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Mapping of Claims to Profile Fields (one per line):'),
-      '#cols' => 50,
-      '#rows' => 5,
-      '#default_value' => $config->get('auth0_claim_mapping'),
-      '#description' => t('Enter claim mappings here in the format &lt;claim_name>|&lt;profile_field_name> (one per line), e.g:
-<br/>given_name|field_first_name
-<br/>family_name|field_last_name
-<br/>
-<br/>NOTE: the following Drupal fields are handled automatically and will be ignored if specified above:
-<br/>    uid, name, mail, init, is_new, status, pass
-<br/>&nbsp;
-'),
-    );
-
-    $form['auth0_claim_to_use_for_role'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Claim for Role Mapping:'),
-      '#default_value' => $config->get('auth0_claim_to_use_for_role'),
-      '#description' => t('Name of the claim to use to map to Drupal roles, e.g. roles.  If the claim contains a list of values, all values will be used in the mappings below.')
-    );
-
-    $form['auth0_role_mapping'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Mapping of Claim Role Values to Drupal Roles (one per line)'),
-      '#default_value' => $config->get('auth0_role_mapping'),
-      '#description' => t('Enter role mappings here in the format &lt;auth0 claim value>|&lt;drupal role name> (one per line), e.g.:
-<br/>admin|administrator
-<br/>poweruser|power users
-<br/>
-<br/>NOTE: for any drupal role in the mapping, if a user is not mapped to the role, the role will be removed from their profile.
-Drupal roles not listed above will not be changed by this module.
-<br/>&nbsp;
-')
-    );
-
 
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
@@ -173,18 +102,11 @@ Drupal roles not listed above will not be changed by this module.
     $config = \Drupal::service('config.factory')->getEditable('auth0.settings');
     $config->set('auth0_form_title', $form_state->getValue('auth0_form_title'))
             ->set('auth0_allow_signup', $form_state->getValue('auth0_allow_signup'))
-            ->set('auth0_allow_offline_access', $form_state->getValue('auth0_allow_offline_access'))
             ->set('auth0_redirect_for_sso', $form_state->getValue('auth0_redirect_for_sso'))
             ->set('auth0_widget_cdn', $form_state->getValue('auth0_widget_cdn'))
             ->set('auth0_requires_verified_email', $form_state->getValue('auth0_requires_verified_email'))
-            ->set('auth0_join_user_by_mail_enabled', $form_state->getValue('auth0_join_user_by_mail_enabled'))
-            ->set('auth0_username_claim', $form_state->getValue('auth0_username_claim'))
             ->set('auth0_login_css', $form_state->getValue('auth0_login_css'))
-            ->set('auth0_auto_register', $form_state->getValue('auth0_auto_register'))
             ->set('auth0_lock_extra_settings', $form_state->getValue('auth0_lock_extra_settings'))
-            ->set('auth0_claim_mapping', $form_state->getValue('auth0_claim_mapping'))
-            ->set('auth0_claim_to_use_for_role', $form_state->getValue('auth0_claim_to_use_for_role'))
-            ->set('auth0_role_mapping', $form_state->getValue('auth0_role_mapping'))
             ->save();
   }
 

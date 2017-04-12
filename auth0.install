@@ -56,20 +56,13 @@ function auth0_install() {
 }";
 
   $config = \Drupal::service('config.factory')->getEditable('auth0.settings');
-  $config->set('auth0_form_title', 'Sign In')
-          ->set('auth0_allow_signup', TRUE)
-          ->set('auth0_allow_offline_access', FALSE)
-          ->set('auth0_redirect_for_sso', FALSE)
-          ->set('auth0_widget_cdn', '//cdn.auth0.com/js/lock/11.0/lock.min.js')
+  $config->set('auth0_login_css', $css)
+          ->set('auth0_widget_cdn', 'https://cdn.auth0.com/js/lock/10.2/lock.min.js')
+          ->set('auth0_form_title', 'Sign In')
           ->set('auth0_requires_verified_email', TRUE)
-          ->set('auth0_join_user_by_mail_enabled', FALSE)
-          ->set('auth0_username_claim', 'nickname')
-          ->set('auth0_login_css', $css)
-          ->set('auth0_auto_register', FALSE)
+          ->set('auth0_allow_signup', TRUE)
+          ->set('auth0_redirect_for_sso', FALSE)
           ->set('auth0_lock_extra_settings', '')
-          ->set('auth0_claim_mapping', '')
-          ->set('auth0_claim_to_use_for_role', '')
-          ->set('auth0_role_mapping', '')
           ->save();
 }
 
@@ -77,7 +70,13 @@ function auth0_install() {
  * Implements hook_uninstall().
  */
 function auth0_uninstall() {
-  $config = \Drupal::service('config.factory');
-  $auth0_config = $config->getEditable('auth0.settings');
-  $auth0_config->delete();
+  variable_del('auth0_login_css');
+  variable_del('auth0_widget_cdn');
+  variable_del('auth0_form_title');
+  variable_del('auth0_requires_verified_email');
+  variable_del('auth0_allow_signup');
+  variable_del('auth0_redirect_for_sso');
+  variable_del('auth0_domain');
+  variable_del('auth0_client_id');
+  variable_del('auth0_client_secret');
 }
