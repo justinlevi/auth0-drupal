@@ -5,6 +5,7 @@ namespace Drupal\auth0\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\user\Entity\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Session\SessionManagerInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
@@ -24,6 +25,7 @@ use Auth0\SDK\JWTVerifier;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\API\Authentication;
 use Auth0\SDK\API\Management;
+use Auth0\SDK\API\Helpers\TokenGenerator;
 
 use RandomLib\Factory;
 
@@ -66,6 +68,25 @@ class AuthController extends ControllerBase {
         $container->get('session_manager')
     );
   }
+
+
+  /**
+    * Handles the callback for the current user's JWT token.
+    */
+  public function getToken() {
+     $user = \Drupal::currentUser();
+     $config = \Drupal::service('config.factory')->get('auth0.settings');
+
+     $generator = new TokenGenerator([
+          'client_id' => $config->get('auth0_client_id'),
+          'client_secret' => $config->get('auth0_client_secret'),
+        ]);
+
+      return new JsonResponse($generator->generate([
+          'uid' => $user->getAccount()->id(),
+        ]));
+  }
+
 
   /**
    * Handles the login page override.
